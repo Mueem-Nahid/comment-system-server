@@ -6,10 +6,11 @@ import {
   IPaginationOptions,
 } from '../../../interfaces/common';
 import { paginationHelper } from '../../../helpers/paginationHelper';
-import { SortOrder } from 'mongoose';
+import { SortOrder, Types } from 'mongoose';
 import { User } from '../user/user.model';
 import httpStatus from 'http-status';
 import { postSearchableFields } from './post.constant';
+import {IReview} from "../review/review.interface";
 
 const createBook = async (
   bookData: IPost,
@@ -101,10 +102,51 @@ const deleteBook = async (id: string, user: string): Promise<IPost | null> => {
   return Post.findOneAndDelete({ _id: id, user });
 };
 
+const reactToPost = async (id: string, userId: string, isLiked:boolean) => {
+  const post = await Post.findById(id);
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found.');
+  }
+  // Check if the user has already reacted to the post
+  const userReactionIndex:number = post.reviews.findIndex(
+    (review:IReview) => review.reviewedBy.toString() === userId
+  );
+
+  if (userReactionIndex !== -1) {
+    // User has already reacted, check if they are toggling the same reaction
+    if (post.reviews[userReactionIndex].isLiked === isLiked) {
+      // Undo the reaction
+      post.reviews.splice(userReactionIndex, 1);
+    } else {
+      // Toggle the reaction
+      post.reviews[userReactionIndex].isLiked = isLiked;
+    }
+  } else {
+    // User has not reacted, add a new reaction
+    const id: Types.ObjectId = new Types.ObjectId();
+    const newReaction = {
+      _id: id,
+      reviewedBy: userId,
+      isLiked: isLiked,
+    };
+    // @ts-ignore
+    post.reviews.push(newReaction);
+  }
+
+    // Calculate the likes and dislikes based on the reviews
+  const likes = post.reviews.filter((review:IReview):boolean => review.isLiked === true).length;
+  const dislikes = post.reviews.filter((review:IReview):boolean => review.isLiked === false).length;
+
+  post.likes = likes;
+  post.dislikes = dislikes;
+  return await post.save();
+};
+
 export const PostService = {
   createBook,
   getAllBooks,
   getABook,
   updateBook,
   deleteBook,
+  reactToPost,
 };

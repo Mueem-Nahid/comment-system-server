@@ -21,6 +21,12 @@ router.post(
   ReviewController.createReview
 );
 
+router.post(
+  '/:postId/reaction',
+  auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  PostController.reactToPost
+);
+
 router.get('/:id', PostController.getABook);
 
 router.patch('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.updateBook);

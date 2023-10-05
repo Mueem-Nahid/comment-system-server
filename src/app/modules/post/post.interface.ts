@@ -4,6 +4,8 @@ import { IReview } from '../review/review.interface';
 export type IPost = {
   _id?: ObjectId;
   post: string;
+  likes: number;
+  dislikes: number;
   reviews: IReview[];
   user: mongoose.Types.ObjectId;
   toObject(): any;

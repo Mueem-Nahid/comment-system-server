@@ -13,7 +13,6 @@ export const reviewSchema = new Schema<IReview>(
     review: {
       type: String,
     },
-    isLiked: { type: Boolean },
   },
   { timestamps: true }
 );

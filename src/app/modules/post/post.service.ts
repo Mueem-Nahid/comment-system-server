@@ -110,9 +110,12 @@ const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
 
   // Find the user's index in the likes and dislikes arrays
   const userLikeIndex = post.likes.findIndex(
+     // @ts-ignore
     like => like.user.toString() === userId
   );
+
   const userDislikeIndex = post.dislikes.findIndex(
+     // @ts-ignore
     dislike => dislike.user.toString() === userId
   );
 
@@ -122,6 +125,7 @@ const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
       post.likes.splice(userLikeIndex, 1);
     } else {
       // User has not liked, add a like and remove a dislike if present
+      // @ts-ignore
       post.likes.push({ user: userId });
       if (userDislikeIndex !== -1) {
         post.dislikes.splice(userDislikeIndex, 1);
@@ -133,6 +137,7 @@ const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
       post.dislikes.splice(userDislikeIndex, 1);
     } else {
       // User has not disliked, add a dislike and remove a like if present
+      // @ts-ignore
       post.dislikes.push({ user: userId });
       if (userLikeIndex !== -1) {
         post.likes.splice(userLikeIndex, 1);

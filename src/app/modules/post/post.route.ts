@@ -4,7 +4,7 @@ import { PostController } from './post.controller';
 import { PostValidation } from './post.validation';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
-import { ReviewController } from '../review/review.controller';
+import { CommentController } from '../comment/comment.controller';
 
 const router = express.Router();
 
@@ -12,13 +12,13 @@ router.post(
   '/',
   validateRequest(PostValidation.createPostZodSchema),
   auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
-  PostController.createBook
+  PostController.createPost
 );
 
 router.post(
-  '/:bookId/reviews',
+  '/:postId/comments',
   auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
-  ReviewController.createReview
+  CommentController.createComment
 );
 
 router.post(
@@ -27,16 +27,16 @@ router.post(
   PostController.reactToPost
 );
 
-router.get('/:id', PostController.getABook);
+router.get('/:id', PostController.getAPost);
 
-router.patch('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.updateBook);
+router.patch('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.updatePost);
 
-router.delete('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.deleteBook);
+router.delete('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.deletePost);
 
 router.get(
   '/',
   auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
-  PostController.getAllBooks
+  PostController.getAllPosts
 );
 
 export const PostRoutes = router;

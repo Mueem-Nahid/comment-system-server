@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { PostModel, IPost } from './post.interface';
-import { reviewSchema } from '../review/review.model';
+import { commentSchema } from '../comment/comment.model';
 
 const postSchema = new Schema<IPost>(
   {
@@ -17,10 +17,10 @@ const postSchema = new Schema<IPost>(
     ],
     totalLikes: { type: Number, default: 0 },
     totalDislikes: { type: Number, default: 0 },
-    reviews: [reviewSchema],
+    reviews: [commentSchema],
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { versionKey: false, timestamps: true }
 );
 
-export const Post = model<IPost, PostModel>('Post', postSchema);
+export const Post:PostModel = model<IPost, PostModel>('Post', postSchema);

@@ -10,25 +10,25 @@ import { SortOrder, Types } from 'mongoose';
 import { User } from '../user/user.model';
 import httpStatus from 'http-status';
 import { postSearchableFields } from './post.constant';
-import { IReview } from '../review/review.interface';
+import { IComment } from '../comment/comment.interface';
 
-const createBook = async (
-  bookData: IPost,
+const createPost = async (
+  postData: IPost,
   userEmail: string
 ): Promise<IPost | null> => {
   const user = new User();
   if (
     !(await user.isExist(userEmail)) ||
-    !(await user.isExistById(bookData.user.toString()))
+    !(await user.isExistById(postData.user.toString()))
   )
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
 
-  const createdBook = Post.create(bookData);
-  if (!createdBook) throw new ApiError(400, 'Failed to create post.');
-  return createdBook;
+  const createdPost = Post.create(postData);
+  if (!createdPost) throw new ApiError(400, 'Failed to create post.');
+  return createdPost;
 };
 
-const getAllBooks = async (
+const getAllPosts = async (
   filters: IPostFilter,
   paginationOption: IPaginationOptions
 ): Promise<IGenericResponsePagination<IPost[]>> => {
@@ -84,11 +84,11 @@ const getAllBooks = async (
   };
 };
 
-const getABook = async (id: string): Promise<IPost | null> => {
-  return Post.findById(id).populate('reviews.reviewedBy', 'name', 'User');
+const getAPost = async (id: string): Promise<IPost | null> => {
+  return Post.findById(id).populate('comments.commentedBy', 'name', 'User');
 };
 
-const updateBook = async (
+const updatePost = async (
   id: string,
   payload: Partial<IPost>,
   userId: string
@@ -98,7 +98,7 @@ const updateBook = async (
   });
 };
 
-const deleteBook = async (id: string, user: string): Promise<IPost | null> => {
+const deletePost = async (id: string, user: string): Promise<IPost | null> => {
   return Post.findOneAndDelete({ _id: id, user });
 };
 
@@ -154,10 +154,10 @@ const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
 };
 
 export const PostService = {
-  createBook,
-  getAllBooks,
-  getABook,
-  updateBook,
-  deleteBook,
+  createPost,
+  getAllPosts,
+  getAPost,
+  updatePost,
+  deletePost,
   reactToPost,
 };

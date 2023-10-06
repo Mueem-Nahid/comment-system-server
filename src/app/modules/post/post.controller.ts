@@ -11,25 +11,25 @@ import { paginationFields } from '../../../constants/pagination';
 import { JwtPayload } from 'jsonwebtoken';
 import { WishlistService } from '../wishlist/wishlist.service';
 
-const createBook = catchAsync(
+const createPost = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
-    const bookData = req.body;
+    const postData = req.body;
     const userObj: JwtPayload | null = req.user;
     const userEmail = userObj?.email;
-    const result: IPost | null = await PostService.createBook(
-      bookData,
+    const result: IPost | null = await PostService.createPost(
+       postData,
       userEmail
     );
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
-      message: 'Book created successfully !',
+      message: 'Post created successfully !',
       data: result,
     });
   }
 );
 
-const getAllBooks = catchAsync(
+const getAllPosts = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const filters = pick(req.query, filterableFields);
     const paginationOptions: IPaginationOptions = pick(
@@ -40,81 +40,81 @@ const getAllBooks = catchAsync(
     const userObj: JwtPayload | null = req.user;
     const userId = userObj?._id;
 
-    const result = await PostService.getAllBooks(filters, paginationOptions);
+    const result = await PostService.getAllPosts(filters, paginationOptions);
 
     if (userId) {
       const wishlist = await WishlistService.getUserWishlist(userId);
       // Create a set of post ids in the wishlist for faster lookup
-      const wishlistSet = new Set(wishlist.map(item => item.book.toString()));
+      const wishlistSet = new Set(wishlist.map(item => item.post.toString()));
 
-      // Convert each Book document to a plain JavaScript object and add the isWishlisted property
+      // Convert each Post document to a plain JavaScript object and add the isWishlisted property
 
-      result.data = result.data.map((book: IPost) => ({
-        ...book?.toObject(),
+      result.data = result.data.map((post: IPost) => ({
+        ...post?.toObject(),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        isWishlisted: wishlistSet.has(book?._id.toString()),
+        isWishlisted: wishlistSet.has(post?._id.toString()),
       }));
     }
 
     sendResponse<IPost[]>(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Books are retrieved successfully !',
+      message: 'Posts are retrieved successfully !',
       meta: result.meta,
       data: result.data,
     });
   }
 );
 
-const getABook = catchAsync(
+const getAPost = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
-    const result: IPost | null = await PostService.getABook(id);
+    const result: IPost | null = await PostService.getAPost(id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Book',
+      message: 'Post',
       data: result,
     });
   }
 );
 
-const updateBook = catchAsync(async (req: Request, res: Response) => {
+const updatePost = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const data = req.body;
   const userObj: JwtPayload | null = req.user;
   const userId = userObj?._id;
-  const result: IPost | null = await PostService.updateBook(id, data, userId);
+  const result: IPost | null = await PostService.updatePost(id, data, userId);
   if (!result)
     sendResponse<IPost>(res, {
       statusCode: httpStatus.NOT_FOUND,
       success: false,
-      message: 'Book not updated. No post is available to update.',
+      message: 'Post not updated. No post is available to update.',
     });
   sendResponse<IPost>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Book updated !',
+    message: 'Post updated !',
     data: result,
   });
 });
 
-const deleteBook = catchAsync(async (req: Request, res: Response) => {
+const deletePost = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const userObj: JwtPayload | null = req.user;
   const userId = userObj?._id;
-  const result = await PostService.deleteBook(id, userId);
+  const result = await PostService.deletePost(id, userId);
   if (!result)
     sendResponse<IPost>(res, {
       statusCode: httpStatus.NOT_FOUND,
       success: false,
-      message: 'Book not deleted. No post is available to delete.',
+      message: 'Post not deleted. No post is available to delete.',
     });
   sendResponse<IPost>(res, {
     statusCode: httpStatus.NO_CONTENT,
     success: true,
-    message: 'Book deleted !',
+    message: 'Post deleted !',
   });
 });
 
@@ -138,10 +138,10 @@ const reactToPost = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const PostController = {
-  createBook,
-  getAllBooks,
-  getABook,
-  updateBook,
-  deleteBook,
+  createPost,
+  getAllPosts,
+  getAPost,
+  updatePost,
+  deletePost,
   reactToPost,
 };

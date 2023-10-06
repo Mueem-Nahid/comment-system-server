@@ -2,28 +2,28 @@ import catchAsync from '../../../shared/catchAsync';
 import { Request, Response } from 'express';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
-import { IReview } from './review.interface';
+import { IComment } from './comment.interface';
 import { Types } from 'mongoose';
-import { ReviewService } from './review.service';
+import { CommentService } from './comment.service';
 import { IPost } from '../post/post.interface';
 
-const createReview = catchAsync(
+const createComment = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
-    const { bookId } = req.params;
-    const { review } = req.body;
+    const { postId } = req.params;
+    const { comment } = req.body;
     const user = req.user;
     const id: Types.ObjectId = new Types.ObjectId();
 
-    const newReview: IReview = {
+    const newComment: IComment = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       _id: id,
-      reviewedBy: user?._id,
-      review,
+      commentedBy: user?._id,
+      comment,
     };
-    const result: IPost | null = await ReviewService.createReview(
-      bookId,
-      newReview
+    const result: IPost | null = await CommentService.createComment(
+       postId,
+      newComment
     );
 
     sendResponse(res, {
@@ -35,6 +35,6 @@ const createReview = catchAsync(
   }
 );
 
-export const ReviewController = {
-  createReview,
+export const CommentController = {
+   createComment,
 };

@@ -1,5 +1,5 @@
 import mongoose, { Model, ObjectId } from 'mongoose';
-import { IReview } from '../review/review.interface';
+import { IComment } from '../comment/comment.interface';
 
 export type IPost = {
   _id?: ObjectId;
@@ -8,7 +8,7 @@ export type IPost = {
   dislikes: ObjectId[];
   totalLikes: number;
   totalDislikes: number;
-  reviews: IReview[];
+  reviews: IComment[];
   user: mongoose.Types.ObjectId;
   toObject(): any;
 };

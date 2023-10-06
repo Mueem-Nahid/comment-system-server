@@ -121,7 +121,7 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
 const reactToPost = catchAsync(async (req: Request, res: Response) => {
   const { postId } = req.params;
   const user = req.user;
-   const {isLiked} = req.body;
+  const { isLiked } = req.body;
   const result = await PostService.reactToPost(postId, user?._id, isLiked);
   if (!result) {
     return sendResponse(res, {

@@ -10,7 +10,7 @@ import { SortOrder, Types } from 'mongoose';
 import { User } from '../user/user.model';
 import httpStatus from 'http-status';
 import { postSearchableFields } from './post.constant';
-import {IReview} from "../review/review.interface";
+import { IReview } from '../review/review.interface';
 
 const createBook = async (
   bookData: IPost,
@@ -102,43 +102,49 @@ const deleteBook = async (id: string, user: string): Promise<IPost | null> => {
   return Post.findOneAndDelete({ _id: id, user });
 };
 
-const reactToPost = async (id: string, userId: string, isLiked:boolean) => {
+const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
   const post = await Post.findById(id);
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Post not found.');
   }
-  // Check if the user has already reacted to the post
-  const userReactionIndex:number = post.reviews.findIndex(
-    (review:IReview) => review.reviewedBy.toString() === userId
+
+  // Find the user's index in the likes and dislikes arrays
+  const userLikeIndex = post.likes.findIndex(
+    like => like.user.toString() === userId
+  );
+  const userDislikeIndex = post.dislikes.findIndex(
+    dislike => dislike.user.toString() === userId
   );
 
-  if (userReactionIndex !== -1) {
-    // User has already reacted, check if they are toggling the same reaction
-    if (post.reviews[userReactionIndex].isLiked === isLiked) {
-      // Undo the reaction
-      post.reviews.splice(userReactionIndex, 1);
+  if (isLiked) {
+    if (userLikeIndex !== -1) {
+      // User has already liked, remove the like
+      post.likes.splice(userLikeIndex, 1);
     } else {
-      // Toggle the reaction
-      post.reviews[userReactionIndex].isLiked = isLiked;
+      // User has not liked, add a like and remove a dislike if present
+      post.likes.push({ user: userId });
+      if (userDislikeIndex !== -1) {
+        post.dislikes.splice(userDislikeIndex, 1);
+      }
     }
   } else {
-    // User has not reacted, add a new reaction
-    const id: Types.ObjectId = new Types.ObjectId();
-    const newReaction = {
-      _id: id,
-      reviewedBy: userId,
-      isLiked: isLiked,
-    };
-    // @ts-ignore
-    post.reviews.push(newReaction);
+    if (userDislikeIndex !== -1) {
+      // User has already disliked, remove the dislike
+      post.dislikes.splice(userDislikeIndex, 1);
+    } else {
+      // User has not disliked, add a dislike and remove a like if present
+      post.dislikes.push({ user: userId });
+      if (userLikeIndex !== -1) {
+        post.likes.splice(userLikeIndex, 1);
+      }
+    }
   }
 
-    // Calculate the likes and dislikes based on the reviews
-  const likes = post.reviews.filter((review:IReview):boolean => review.isLiked === true).length;
-  const dislikes = post.reviews.filter((review:IReview):boolean => review.isLiked === false).length;
+  // Recalculate the totalLikes and totalDislikes based on the arrays
+  post.totalLikes = post.likes.length;
+  post.totalDislikes = post.dislikes.length;
 
-  post.likes = likes;
-  post.dislikes = dislikes;
+  // Save the updated post
   return await post.save();
 };
 

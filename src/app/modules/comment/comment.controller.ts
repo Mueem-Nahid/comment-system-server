@@ -22,7 +22,7 @@ const createComment = catchAsync(
       comment,
     };
     const result: IPost | null = await CommentService.createComment(
-       postId,
+      postId,
       newComment
     );
 
@@ -36,5 +36,5 @@ const createComment = catchAsync(
 );
 
 export const CommentController = {
-   createComment,
+  createComment,
 };

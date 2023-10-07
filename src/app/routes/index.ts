@@ -3,7 +3,6 @@ import { UserRoutes } from '../modules/user/user.route';
 import { AdminRoutes } from '../modules/admin/admin.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { PostRoutes } from '../modules/post/post.route';
-import { WishlistRoutes } from '../modules/wishlist/wishlist.route';
 
 const router = express.Router();
 
@@ -20,10 +19,6 @@ const moduleRoutes: { path: string; route: Router }[] = [
   {
     path: '/posts',
     route: PostRoutes,
-  },
-  {
-    path: '/wishlist',
-    route: WishlistRoutes,
   },
   {
     path: '/admins',

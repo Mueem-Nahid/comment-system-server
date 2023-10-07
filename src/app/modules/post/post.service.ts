@@ -110,12 +110,12 @@ const reactToPost = async (id: string, userId: string, isLiked: boolean) => {
 
   // Find the user's index in the likes and dislikes arrays
   const userLikeIndex = post.likes.findIndex(
-     // @ts-ignore
+    // @ts-ignore
     like => like.user.toString() === userId
   );
 
   const userDislikeIndex = post.dislikes.findIndex(
-     // @ts-ignore
+    // @ts-ignore
     dislike => dislike.user.toString() === userId
   );
 

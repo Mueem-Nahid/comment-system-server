@@ -6,10 +6,12 @@ import { PostService } from './post.service';
 import { IPost } from './post.interface';
 import pick from '../../../shared/pick';
 import { filterableFields } from './post.constant';
-import { IPaginationOptions } from '../../../interfaces/common';
+import {
+  IGenericResponsePagination,
+  IPaginationOptions,
+} from '../../../interfaces/common';
 import { paginationFields } from '../../../constants/pagination';
 import { JwtPayload } from 'jsonwebtoken';
-import { WishlistService } from '../wishlist/wishlist.service';
 
 const createPost = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
@@ -17,7 +19,7 @@ const createPost = catchAsync(
     const userObj: JwtPayload | null = req.user;
     const userEmail = userObj?.email;
     const result: IPost | null = await PostService.createPost(
-       postData,
+      postData,
       userEmail
     );
     sendResponse(res, {
@@ -40,22 +42,8 @@ const getAllPosts = catchAsync(
     const userObj: JwtPayload | null = req.user;
     const userId = userObj?._id;
 
-    const result = await PostService.getAllPosts(filters, paginationOptions);
-
-    if (userId) {
-      const wishlist = await WishlistService.getUserWishlist(userId);
-      // Create a set of post ids in the wishlist for faster lookup
-      const wishlistSet = new Set(wishlist.map(item => item.post.toString()));
-
-      // Convert each Post document to a plain JavaScript object and add the isWishlisted property
-
-      result.data = result.data.map((post: IPost) => ({
-        ...post?.toObject(),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        isWishlisted: wishlistSet.has(post?._id.toString()),
-      }));
-    }
+    const result: IGenericResponsePagination<IPost[]> =
+      await PostService.getAllPosts(filters, paginationOptions);
 
     sendResponse<IPost[]>(res, {
       statusCode: httpStatus.OK,

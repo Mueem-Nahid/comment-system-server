@@ -1,7 +1,5 @@
 import { Model } from 'mongoose';
 
-export type IUserRole = 'seller' | 'buyer';
-
 export type IUser = {
   _id: string;
   email: string;

@@ -1,6 +1,5 @@
 // req validation
 import { z } from 'zod';
-import { userRole } from './user.constant';
 
 const createUserZodSchema = z.object({
   body: z.object({

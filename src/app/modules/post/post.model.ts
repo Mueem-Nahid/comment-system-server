@@ -23,4 +23,4 @@ const postSchema = new Schema<IPost>(
   { versionKey: false, timestamps: true }
 );
 
-export const Post:PostModel = model<IPost, PostModel>('Post', postSchema);
+export const Post: PostModel = model<IPost, PostModel>('Post', postSchema);

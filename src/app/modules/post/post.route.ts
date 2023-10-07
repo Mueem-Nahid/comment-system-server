@@ -11,31 +11,31 @@ const router = express.Router();
 router.post(
   '/',
   validateRequest(PostValidation.createPostZodSchema),
-  auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   PostController.createPost
 );
 
 router.post(
   '/:postId/comments',
-  auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   CommentController.createComment
 );
 
 router.post(
   '/:postId/reaction',
-  auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   PostController.reactToPost
 );
 
 router.get('/:id', PostController.getAPost);
 
-router.patch('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.updatePost);
+router.patch('/:id', auth(ENUM_USER_ROLE.USER), PostController.updatePost);
 
-router.delete('/:id', auth(ENUM_USER_ROLE.SELLER), PostController.deletePost);
+router.delete('/:id', auth(ENUM_USER_ROLE.USER), PostController.deletePost);
 
 router.get(
   '/',
-  auth(ENUM_USER_ROLE.BUYER, ENUM_USER_ROLE.SELLER, ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN),
   PostController.getAllPosts
 );
 

@@ -12,9 +12,6 @@ export type IPaginationOptions = {
   limit?: number;
   sortBy?: string;
   sortOrder?: SortOrder;
-  minPrice?: number;
-  maxPrice?: number;
-  location?: string;
 };
 
 export type IGenericResponsePagination<T> = {

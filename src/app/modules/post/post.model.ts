@@ -17,7 +17,7 @@ const postSchema = new Schema<IPost>(
     ],
     totalLikes: { type: Number, default: 0 },
     totalDislikes: { type: Number, default: 0 },
-    reviews: [commentSchema],
+    comments: [commentSchema],
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { versionKey: false, timestamps: true }

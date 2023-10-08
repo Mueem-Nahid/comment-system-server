@@ -86,7 +86,9 @@ const getAllPosts = async (
 };
 
 const getAPost = async (id: string): Promise<IPost | null> => {
-  return Post.findById(id).populate('comments.commentedBy', 'name', 'User');
+  return Post.findById(id)
+     .populate('user')
+     .populate('comments.commentedBy', 'name', 'User');
 };
 
 const updatePost = async (

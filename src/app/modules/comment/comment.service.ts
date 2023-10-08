@@ -10,7 +10,7 @@ const createComment = async (
 ): Promise<IPost | null> => {
   const updatedPost = await Post.findOneAndUpdate(
     { _id: postId },
-    { $push: { reviews: newComment } },
+    { $push: { comments: newComment } },
     { new: true }
   );
   if (!updatedPost) throw new ApiError(httpStatus.NOT_FOUND, 'Post not found');

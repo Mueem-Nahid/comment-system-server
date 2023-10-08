@@ -8,7 +8,7 @@ export type IPost = {
   dislikes: ObjectId[];
   totalLikes: number;
   totalDislikes: number;
-  reviews: IComment[];
+  comments: IComment[];
   user: mongoose.Types.ObjectId;
   toObject(): any;
 };

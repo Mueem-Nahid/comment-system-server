@@ -68,7 +68,7 @@ const getAllPosts = async (
     andConditions.length > 0 ? { $and: andConditions } : {};
 
   const result = await Post.find(whereCondition)
-     .populate('user')
+    .populate('user')
     .sort(sortConditions)
     .skip(skip)
     .limit(limit);
@@ -87,8 +87,8 @@ const getAllPosts = async (
 
 const getAPost = async (id: string): Promise<IPost | null> => {
   return Post.findById(id)
-     .populate('user')
-     .populate('comments.commentedBy', 'name', 'User');
+    .populate('user')
+    .populate('comments.commentedBy', 'name', 'User');
 };
 
 const updatePost = async (

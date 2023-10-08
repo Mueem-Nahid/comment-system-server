@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { Server } from 'http';
 import app from './app';
 import config from './config';
-import {configureSocketIO} from "./socketIOServer";
+import { configureSocketIO } from './socketIOServer';
 
 process.on('uncaughtException', error => {
   console.log(error);
@@ -35,7 +35,7 @@ async function bootstrap() {
       process.exit(1);
     }
   });
-};
+}
 
 bootstrap();
 

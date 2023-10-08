@@ -10,6 +10,7 @@ import { ObjectId, SortOrder } from 'mongoose';
 import { User } from '../user/user.model';
 import httpStatus from 'http-status';
 import { postSearchableFields } from './post.constant';
+import config from "../../../config";
 
 const createPost = async (
   postData: IPost,
@@ -24,8 +25,10 @@ const createPost = async (
 
   const createdPost = await Post.create(postData);
   if (!createdPost) throw new ApiError(400, 'Failed to create post.');
-  const populatedPost: IPost | null = await getAPost(createdPost?._id);
-  return populatedPost;
+  if(config.env !== 'production') {
+    return  await getAPost(createdPost?._id);
+  }
+  return createdPost;
 };
 
 const getAllPosts = async (

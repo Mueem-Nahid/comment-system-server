@@ -14,6 +14,7 @@ import {
 import { paginationFields } from '../../../constants/pagination';
 import { JwtPayload } from 'jsonwebtoken';
 import { getSocketIOInstance } from '../../../socketIOServer';
+import config from "../../../config";
 
 const createPost = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
@@ -25,10 +26,12 @@ const createPost = catchAsync(
       userEmail
     );
 
-    // Get the Socket.io instance
-    const io: Server = getSocketIOInstance();
-    // Emit a socket event to notify clients about the new post
-    io.emit('newPost', result);
+    // Get the Socket.io instance. Vercel does not support socket io.
+     if(config.env !== 'production') {
+        const io: Server = getSocketIOInstance();
+        // Emit a socket event to notify clients about the new post
+        io.emit('newPost', result);
+     }
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,

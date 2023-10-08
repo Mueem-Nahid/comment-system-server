@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Server } from 'http';
 import app from './app';
 import config from './config';
+import {configureSocketIO} from "./socketIOServer";
 
 process.on('uncaughtException', error => {
   console.log(error);
@@ -15,9 +16,10 @@ async function bootstrap() {
   try {
     await mongoose.connect(config.database_url as string);
     console.log('Database connection successful !!!');
-
     server = app.listen(config.port, () => {
       console.log(`Server listening on port ${config.port} ...`);
+      // Initialize Socket.io and pass the HTTP server instance
+      configureSocketIO(server);
     });
   } catch (error) {
     console.log(`Failed to connect database.`, error);
@@ -33,7 +35,7 @@ async function bootstrap() {
       process.exit(1);
     }
   });
-}
+};
 
 bootstrap();
 

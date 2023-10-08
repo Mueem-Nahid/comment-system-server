@@ -15,4 +15,5 @@ export default {
     jwt_expired_time: process.env.JWT_EXPIRED_TIME,
     jwt_refresh_token_expired_time: process.env.JWT_REFRESH_TOKEN_EXPIRED_TIME,
   },
+  frontend_url: process.env.FRONTEND_URL,
 };

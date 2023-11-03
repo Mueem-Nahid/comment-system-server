@@ -11,3 +11,10 @@
 ## Frontend
 
 - https://github.com/Mueem-Nahid/comment-system-client
+
+## Technology
+- TypeScript
+- Node Js
+- Express Js
+- Socket IO
+- MongoDB
